@@ -1,27 +1,22 @@
 import axios from "axios";
 
 const LoginApi = {
-    loginApi(data) {
-        return axios({
-            'url': '/user/login',
-            'method': 'post',
-            data
-        })
-    },
-    sendMsgApi(data) {
-        return axios({
-            'url': '/user/sendMsg',
-            'method': 'post',
-            data
-        })
-    },
-    loginoutApi() {
-        return axios({
-            'url': '/user/loginout',
-            'method': 'post',
-        })
-    }
+  /*
+  * login.js
+  */
+  loginApi(data) {
+    return axios({
+      'url': '/employee/login',
+      'method': 'post',
+      data
+    })
+  },
+  logoutApi() {
+    return axios({
+      'url': '/employee/logout',
+      'method': 'post',
+    })
+  }
 }
 
 export default LoginApi
-  

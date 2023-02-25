@@ -1,34 +1,29 @@
-//提交订单
-function  addOrderApi(data){
-    return $axios({
-        'url': '/order/submit',
-        'method': 'post',
-        data
-      })
+import axios from "axios";
+
+const OrderApi = {
+  // 查询列表页接口
+  getOrderDetailPage(params) {
+    return axios({
+      url: '/order/page',
+      method: 'get',
+      params
+    })
+  },
+  // 查看接口
+  queryOrderDetailById(id) {
+    return axios({
+      url: `/orderDetail/${id}`,
+      method: 'get'
+    })
+  },
+  // 取消，派送，完成接口
+  editOrderDetail(params) {
+    return axios({
+      url: '/order',
+      method: 'put',
+      data: { ...params }
+    })
+  }
 }
 
-//查询所有订单
-function orderListApi() {
-  return $axios({
-    'url': '/order/list',
-    'method': 'get',
-  })
-}
-
-//分页查询订单
-function orderPagingApi(data) {
-  return $axios({
-      'url': '/order/userPage',
-      'method': 'get',
-      params:{...data}
-  })
-}
-
-//再来一单
-function orderAgainApi(data) {
-  return $axios({
-      'url': '/order/again',
-      'method': 'post',
-      data
-  })
-}
+export default OrderApi
