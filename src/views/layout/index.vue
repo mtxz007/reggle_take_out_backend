@@ -6,6 +6,9 @@
     </div>
     <!-- 页面 -->
     <div class="main-container">
+      <!-- 标题栏 -->
+      <MyNabar></MyNabar>
+      <!-- 内容 -->
       <Content></Content>
     </div>
   </div>
@@ -14,10 +17,12 @@
 <script>
 import Menu from "@/views/layout/Menu";
 import Content from "@/views/layout/Content";
+import MyNabar from "@/components/Navbar";
 
 export default {
   name: "MyIndex",
   components:{
+    MyNabar,
     Menu,
     Content
   }

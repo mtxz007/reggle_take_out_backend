@@ -103,16 +103,16 @@
         width="60%"
         :before-close="handleClose"
     >
-      <el-input
-          v-model="value"
-          class="seachDish"
-          placeholder="请输入菜品名称进行搜索"
-          style="width: 250px"
-          size="small"
-          clearable
-      >
-        <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="seachHandle"></i>
-      </el-input>
+<!--      <el-input-->
+<!--          v-model="value"-->
+<!--          class="seachDish"-->
+<!--          placeholder="请输入菜品名称进行搜索"-->
+<!--          style="width: 250px"-->
+<!--          size="small"-->
+<!--          clearable-->
+<!--      >-->
+<!--        <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="seachHandle"></i>-->
+<!--      </el-input>-->
       <!-- <AddDish ref="adddish" :check-list="checkList" :seach-key="seachKey" @checkList="getCheckList" /> -->
 
       <div class="addDishCon">
@@ -442,14 +442,6 @@
         }
       },
       goBack() {
-        // window.parent.menuHandle(
-        //     {
-        //       id: '5',
-        //       url: '/backend/page/combo/list.html',
-        //       name: '套餐管理',
-        //     },
-        //     false
-        // )
         this.$router.back()
       },
       // 获取套餐分类

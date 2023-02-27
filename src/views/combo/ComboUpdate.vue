@@ -103,16 +103,16 @@
         width="60%"
         :before-close="handleClose"
     >
-      <el-input
-          v-model="value"
-          class="seachDish"
-          placeholder="请输入菜品名称进行搜索"
-          style="width: 250px"
-          size="small"
-          clearable
-      >
-        <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="seachHandle"></i>
-      </el-input>
+<!--      <el-input-->
+<!--          v-model="value"-->
+<!--          class="seachDish"-->
+<!--          placeholder="请输入菜品名称进行搜索"-->
+<!--          style="width: 250px"-->
+<!--          size="small"-->
+<!--          clearable-->
+<!--      >-->
+<!--        <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="seachHandle"></i>-->
+<!--      </el-input>-->
       <!-- <AddDish ref="adddish" :check-list="checkList" :seach-key="seachKey" @checkList="getCheckList" /> -->
 
       <div class="addDishCon">
@@ -143,10 +143,7 @@
                     :key="index"
                     class="items"
                 >
-                  <el-checkbox
-                      :key="index"
-                      :label="item"
-                  >
+                  <el-checkbox :key="index" :label="item">
                     <div class="item">
                       <span style="flex: 3;text-align: left">{{ item.dishName }}</span>
                       <span>{{ item.status == 0 ? '停售' : '在售' }}</span>
@@ -168,7 +165,7 @@
                 :key="ind"
                 class="item"
             >
-              <span>{{ item.dishName }}</span>
+              <span>{{ item.name }}</span>
               <span class="price">￥ {{ Number(item.price)/100 }} </span>
               <span
                   class="del"
@@ -195,8 +192,6 @@
 <script>
   import ComboApi from "@/api/combo";
   import FoodApi from "@/api/food";
-  import UrlParam from "@/assets/js";
-  import validate from "@/assets/js/validate"
   export default {
     name: "ComboAdd",
     data() {
@@ -280,14 +275,11 @@
     created() {
       this.getDishTypeList()
       this.getDishType()
-      // this.id = UrlParam.requestUrlParam('id')
-      // this.actionType = this.id ? 'edit' : 'add'
-      // if (this.id) {
-      //   this.init()
-      // }
       this.init()
     },
-    mounted() {},
+    mounted() {
+
+    },
     methods: {
       async init() {
         ComboApi.querySetmealById(this.id).then((res) => {
@@ -327,6 +319,7 @@
       // 获取添加菜品数据
       getCheckList(value) {
         this.checkList = [...value]
+        console.log('已添加菜品数据：',this.checkList)
       },
 
       // 添加菜品
@@ -416,24 +409,16 @@
         }
       },
       goBack() {
-        // window.parent.menuHandle(
-        //     {
-        //       id: '5',
-        //       url: '/backend/page/combo/list.html',
-        //       name: '套餐管理',
-        //     },
-        //     false
-        // )
         this.$router.back()
       },
       // 获取套餐分类
       getDishType () {
         FoodApi.getCategoryList({'type':1}).then(res => {
-          if (res.code === 1) {
-            this.dishType = res.data
-            this.getDishList(res.data[0].id)
+          if (res.data.code === 1) {
+            this.dishType = res.data.data
+            this.getDishList(res.data.data[0].id)
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.data.msg)
           }
         })
       },
@@ -441,12 +426,12 @@
       // 通过套餐ID获取菜品列表分类
       getDishList (id) {
         FoodApi.queryDishList({categoryId: id}).then(res => {
-          if (res.code === 1) {
-            if (res.data.length === 0) {
+          if (res.data.code === 1) {
+            if (res.data.data.length === 0) {
               this.dishAddList = []
               return
             }
-            let newArr = res.data;
+            let newArr = res.data.data;
             newArr.forEach((n) => {
               n.dishId = n.id
               n.copies = 1
@@ -455,7 +440,7 @@
             })
             this.dishAddList = newArr
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.data.msg)
           }
         })
       },
@@ -463,15 +448,15 @@
       // 关键词收搜菜品列表分类
       getDishForName (name) {
         FoodApi.queryDishList({name}).then(res => {
-          if (res.code === 1) {
-            let newArr = res.data
+          if (res.data.code === 1) {
+            let newArr = res.data.data
             newArr.forEach((n) => {
               n.dishId = n.id
               n.dishName = n.name
             })
             this.dishAddList = newArr
           } else {
-            this.$message.error(res.msg)
+            this.$message.error(res.data.msg)
           }
         })
       },
@@ -799,6 +784,10 @@
     text-align: center;
     flex: 1;
   }
+  /*.addDishCon .leftCont .tabList .table .items span:nth-of-type(2) {*/
+  /*  width: 100%;*/
+  /*}*/
+
   .addDishCon .ritCont {
     width: 40%;
     padding: 0 15px;

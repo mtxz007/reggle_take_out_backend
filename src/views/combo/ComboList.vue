@@ -179,19 +179,9 @@
       // 添加
       addSetMeal (st) {
         if (st === 'add'){
-          // window.parent.menuHandle({
-          //   id: '5',
-          //   url: '/backend/page/combo/add.html',
-          //   name: '添加套餐'
-          // },true)
           this.$store.state.foodUpdateId = ''
           this.$router.push('/home/comboadd')
         } else {
-          // window.parent.menuHandle({
-          //   id: '5',
-          //   url: '/backend/page/combo/add.html?id='+st,
-          //   name: '修改套餐'
-          // },true)
           console.log('修改的id为:',st)
           this.$store.state.comboUpdateId = st
           this.$router.push('/home/comboupdate')

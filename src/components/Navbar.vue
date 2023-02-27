@@ -1,97 +1,28 @@
 <template>
-  <div class="sidebar-container">
-    <div class="logo">
-      <!-- <img src="images/logo.png" width="122.5" alt="" /> -->
-      <img src="images/login/login-logo.png" alt="" style="width: 117px; height: 32px"/>
+  <div class="navbar">
+    <div class="head-lable">
+      <span>{{ headTitle }}</span>
     </div>
-
-    <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu
-          :default-active="defAct"
-          :unique-opened="false"
-          :collapse-transition="false"
-          background-color="#343744"
-          text-color="#bfcbd9"
-          active-text-color="#f4f4f5"
-      >
-        <div v-for="item in menuList" :key="item.id">
-          <el-submenu :index="item.id" v-if="item.children && item.children.length>0">
-            <template slot="title">
-              <i class="iconfont" :class="item.icon"></i>
-              <span>{{ item.name }}</span>
-            </template>
-            <el-menu-item
-                v-for="sub in item.children"
-                :index="sub.id"
-                :key="sub.id"
-                @click="menuHandle(sub,false)"
-            >
-<!--              <i :class="iconfont" :class="sub.icon"></i>-->
-              <span slot="title">{{ sub.name }}</span>
-            </el-menu-item
-            >
-          </el-submenu>
-          <el-menu-item v-else :index="item.id" @click="menuHandle(item,false)">
-            <i class="iconfont" :class="item.icon"></i>
-            <span slot="title">{{ item.name }}</span>
-          </el-menu-item>
-        </div>
-      </el-menu>
-    </el-scrollbar>
+    <div class="right-menu">
+      <div class="avatar-wrapper">{{ userInfo.data.name }}</div>
+<!--       <div class="logout" @click="logout">退出</div>-->
+      <img src="../assets/images/icons/btn_close@2x.png" class="outLogin" alt="退出" @click="logout"/>
+    </div>
   </div>
 </template>
 
 <script>
+import LoginApi from "@/api/login";
+
 export default {
   name: 'MyNabar',
   data() {
     return {
-      defAct: '2',
-      menuActived: '2',
-      userInfo: {},
-      menuList: [
-        // {
-        //   id: '1',
-        //   name: '门店管理',
-        //   children: [
-        {
-          id: '2',
-          name: '员工管理',
-          url: 'page/member/list.html',
-          icon: 'icon-member'
-        },
-        {
-          id: '3',
-          name: '分类管理',
-          url: 'page/category/list.html',
-          icon: 'icon-category'
-        },
-        {
-          id: '4',
-          name: '菜品管理',
-          url: 'page/food/list.html',
-          icon: 'icon-food'
-        },
-        {
-          id: '5',
-          name: '套餐管理',
-          url: 'page/combo/list.html',
-          icon: 'icon-combo'
-        },
-        {
-          id: '6',
-          name: '订单明细',
-          url: 'page/order/list.html',
-          icon: 'icon-order'
-        }
-        //   ],
-        // },
-      ],
-      iframeUrl: 'page/member/list.html',
       headTitle: '员工管理',
       goBackFlag: false,
       loading: true,
-      timer: null
+      timer: null,
+      userInfo: {},
     }
   },
   computed: {},
@@ -103,35 +34,47 @@ export default {
     this.closeLoading()
   },
   beforeDestroy() {
-    this.timer = null
-    clearTimeout(this.timer)
   },
   mounted() {
-    window.menuHandle = this.menuHandle
+  },
+  watch:{
+    '$route' (to, from) {
+      // 在这里触发你的方法
+      if (to.path === '/home/memberlist') {
+        this.headTitle = '员工管理'
+      } else if (to.path === '/home/memberadd') {
+        this.headTitle = '添加员工'
+      } else if (to.path === '/home/memberupdate') {
+        this.headTitle = '修改员工'
+      }  else if (to.path === '/home/category') {
+        this.headTitle = '分类管理'
+      } else if (to.path === '/home/orderlist') {
+        this.headTitle = '订单管理'
+      } else if (to.path === '/home/combolist') {
+        this.headTitle = '套餐管理'
+      } else if (to.path === '/home/comboadd') {
+        this.headTitle = '添加套餐'
+      } else if (to.path === '/home/comboupdate') {
+        this.headTitle = '更改套餐'
+      } else if (to.path === '/home/foodlist') {
+        this.headTitle = '菜品管理'
+      } else if (to.path === '/home/foodadd') {
+        this.headTitle = '添加菜品'
+      } else if (to.path === '/home/foodupdate') {
+        this.headTitle = '更改菜品'
+      } else {
+        this.headTitle = ''
+      }
+    }
   },
   methods: {
     logout() {
-      /*logoutApi().then((res) => {
-        if (res.code === 1) {
+      LoginApi.logoutApi().then((res) => {
+        if (res.data.code === 1) {
           localStorage.removeItem('userInfo')
-          window.location.href = '/backend/page/login/login.html'
+          this.$router.push('/')
         }
-      })*/
-    },
-    goBack() {
-      // window.location.href = 'javascript:history.go(-1)'
-      const menu = this.menuList.find(item => item.id === this.menuActived)
-      // this.goBackFlag = false
-      // this.headTitle = menu.name
-      this.menuHandle(menu, false)
-    },
-    menuHandle(item, goBackFlag) {
-      this.loading = true
-      this.menuActived = item.id
-      this.iframeUrl = item.url
-      this.headTitle = item.name
-      this.goBackFlag = goBackFlag
-      this.closeLoading()
+      })
     },
     closeLoading() {
       this.timer = null
@@ -145,14 +88,74 @@ export default {
 </script>
 
 <style scoped>
-  .body{
-    min-width: 1366px;
-  }
-  .app-main{
-    height: calc(100% - 64px);
-  }
-  .app-main .divTmp{
-    width: 100%;
-    height: 100%;
-  }
+.navbar {
+  height: 64px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+.navbar .head-lable {
+  /* position: absolute; */
+  /* background: #fff; */
+  color: #333333;
+  height: 64px;
+  font-size: 16px;
+  width: 300px;
+  padding-left: 22px;
+  line-height: 64px;
+  font-weight: 700;
+  /* top: 0px;
+  left: 0px; */
+  /*opacity: 0;*/
+  float: left;
+  animation: opacity 500ms ease-out 800ms forwards;
+}
+.navbar .head-lable .goBack {
+  border-right: solid 1px #d8dde3;
+  padding-right: 14px;
+  margin-right: 14px;
+  font-size: 16px;
+  color: #333333;
+  cursor: pointer;
+  font-weight: 400;
+}
+.navbar .head-lable .goBack img {
+  position: relative;
+  top: 24px;
+  margin-right: 5px;
+  width: 18px;
+  height: 18px;
+  float: left;
+}
+.navbar .right-menu {
+  float: right;
+  display: flex;
+  margin-right: 34px;
+  height: 100%;
+  line-height: 64px;
+  color: #333333;
+  font-size: 14px;
+}
+
+.navbar .right-menu .logout {
+  margin-left: 20px;
+  width: 28px;
+  font-size: 14px;
+  color: #ffc200;
+  cursor: pointer;
+}
+
+.navbar .right-menu img {
+  margin-top: 20px;
+  margin-left: 10px;
+  width: 25px;
+  height: 25px;
+}
+.navbar .right-menu .outLogin {
+  cursor: pointer;
+}
+.navbar .right-menu:focus {
+  outline: none;
+}
 </style>

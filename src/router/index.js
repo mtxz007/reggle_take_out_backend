@@ -1,7 +1,6 @@
 import VueRouter from "vue-router";
 import Vue from "vue";
 import login from "@/views/Login";
-// import home from "@/views/Home";
 import memberList from "@/views/member/MemberList";
 import Layout from "@/views/layout";
 import CategoryList from "@/views/category/CategoryList";
