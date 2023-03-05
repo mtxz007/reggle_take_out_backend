@@ -19,6 +19,7 @@
         ></el-date-picker>
         <el-button type="primary" class="search-btn" @click="init">查询</el-button>
       </div>
+
       <el-table :data="tableData" stripe class="tableBox">
         <el-table-column prop="number" label="订单号" min-width="110"></el-table-column>
         <el-table-column prop="订单状态" label="订单状态">
@@ -26,7 +27,6 @@
             <span>{{ getOrderType(row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="userName" label="用户"></el-table-column>
         <el-table-column prop="phone" label="手机号"></el-table-column>
         <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="orderTime" label="下单时间" min-width="100"></el-table-column>
@@ -37,6 +37,10 @@
         </el-table-column>
         <el-table-column prop="btn" label="操作">
           <template slot-scope="{ row }">
+            <el-button type="text" @click="goDetail2(row.orderDetails)" class="blueBug">
+              详情
+            </el-button>
+            <el-divider direction="vertical"></el-divider>
             <el-button type="text" @click="goDetail(row)" class="blueBug">
               查看
             </el-button>
@@ -62,6 +66,22 @@
           @current-change="handleCurrentChange"
       ></el-pagination>
     </div>
+
+    <!-- 查看详情弹框部分 -->
+    <el-dialog
+        title="订单详细信息"
+        :visible.sync="dialogVisible2"
+        width="30%"
+        :before-close="handleClose2"
+    >
+      <div class="info-box">
+        <div class="item-box" v-for="(item,index) in diaForm2" :key="index">
+          <span class="label">{{ item.name }}</span>
+          <span class="des">{{ item.dishFlavor }}</span>
+          <span class="number">{{ item.number }}份</span>
+        </div>
+      </div>
+    </el-dialog>
 
     <!-- 查看弹框部分 -->
     <el-dialog
@@ -100,32 +120,6 @@
           <span class="des">{{ diaForm.orderTime }}</span>
         </div>
       </div>
-      <!-- <el-form ref="diaForm" :model="diaForm" class="dia-form">
-        <el-form-item label="订单号">
-          <span>{{ diaForm.number }}</span>
-        </el-form-item>
-        <el-form-item label="订单状态">
-          <span>{{ getOrderType(diaForm) }}</span>
-        </el-form-item>
-        <el-form-item label="收货人">
-          <span>{{ diaForm.consignee }}</span>
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <span>{{ diaForm.phone }}</span>
-        </el-form-item>
-        <el-form-item label="地址">
-          <span>{{ diaForm.address }}</span>
-        </el-form-item>
-        <el-form-item label="支付金额">
-          <span>{{ diaForm.amount }}</span>
-        </el-form-item>
-        <el-form-item label="下单时间">
-          <span>{{ diaForm.orderTime }}</span>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span> -->
     </el-dialog>
   </div>
 </template>
@@ -145,7 +139,9 @@
         pageSize: 10,
         tableData : [],
         dialogVisible: false,
+        dialogVisible2:false,
         diaForm: {},
+        diaForm2:{},
         loading: false
       }
     },
@@ -189,10 +185,10 @@
             str =  '待付款'
             break;
           case 2:
-            str =  '正在派送'
+            str =  '正在制作'
             break;
           case 3:
-            str =  '已派送'
+            str =  '正在派送'
             break;
           case 4:
             str =  '已完成'
@@ -209,6 +205,12 @@
         this.diaForm = {}
         this.dialogVisible = true
         this.diaForm = { ...row }
+      },
+      // 查看详细信息
+      goDetail2 (row) {
+        this.diaForm2 = {}
+        this.dialogVisible2 = true
+        this.diaForm2 = { ...row }
       },
       // 取消，派送，完成
       cancelOrDeliveryOrComplete (status, id) {
@@ -235,6 +237,9 @@
       },
       handleClose () {
         this.dialogVisible = false
+      },
+      handleClose2 () {
+        this.dialogVisible2 = false
       },
       handleSizeChange (val) {
         this.pageSize = val
@@ -447,7 +452,7 @@
     justify-content: flex-start !important;
   }
   .info-box{
-    margin: -15px -44px 20px;
+    margin: -15px 30px 20px;
   }
   .info-box .item-box{
     display: flex;
@@ -468,5 +473,8 @@
   .info-box .item-box .des{
     flex: 1;
     color: #333333;
+  }
+  .info-box .item-box .number{
+
   }
 </style>

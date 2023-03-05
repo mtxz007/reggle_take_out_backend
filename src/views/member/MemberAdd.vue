@@ -6,15 +6,16 @@
           :model="ruleForm"
           :rules="rules"
           :inline="false"
+          status-icon
           label-width="180px"
           class="demo-ruleForm"
       >
-        <el-form-item label="账号" prop="username">
-          <el-input v-model="ruleForm.username" placeholder="请输入账号" maxlength="20"/>
-        </el-form-item>
-
         <el-form-item label="员工姓名" prop="name">
           <el-input v-model="ruleForm.name" placeholder="请输入员工姓名" maxlength="20"/>
+        </el-form-item>
+
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="ruleForm.username" placeholder="请输入账号" maxlength="20"/>
         </el-form-item>
 
         <el-form-item label="手机号" prop="phone">
@@ -28,8 +29,12 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="身份证号" prop="idNumber">
-          <el-input v-model="ruleForm.idNumber" placeholder="请输入身份证号" maxlength="20"/>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="请输入密码" maxlength="20"/>
+        </el-form-item>
+
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="请再次输入密码"></el-input>
         </el-form-item>
 
         <div class="subBox address">
@@ -64,13 +69,33 @@ import validate from "@/assets/js/validate";
           'name': '',
           'phone': '',
           'sex': '男',
-          'idNumber': '',
-          username: ''
+          username: '',
+          password:'',
+          checkPass:'',
         }
       }
     },
     computed: {
       rules () {
+        var validatePass = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('请输入密码'));
+          } else {
+            if (this.ruleForm.checkPass !== '') {
+              this.$refs.ruleForm.validateField('checkPass');
+            }
+            callback();
+          }
+        };
+        var validatePass2 = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('请再次输入密码'));
+          } else if (value !== this.ruleForm.password) {
+            callback(new Error('两次输入密码不一致!'));
+          } else {
+            callback();
+          }
+        };
         return {
           //账号
           username: [
@@ -81,7 +106,12 @@ import validate from "@/assets/js/validate";
           //姓名
           name: [{ required: true, 'validator': validate.checkName, 'trigger': 'blur' }],
           'phone': [{ 'required': true, 'validator': validate.checkPhone, 'trigger': 'blur' }],
-          'idNumber': [{ 'required': true, 'validator': validate.validID, 'trigger': 'blur' }]
+          password: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
+          checkPass: [
+            { validator: validatePass2, trigger: 'blur' }
+          ],
         }
       }
     },

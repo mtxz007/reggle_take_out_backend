@@ -4,7 +4,8 @@ const OrderApi = {
   // 查询列表页接口
   getOrderDetailPage(params) {
     return axios({
-      url: '/order/page',
+      // url: '/order/page',
+      url: '/orderDetail/page',
       method: 'get',
       params
     })
